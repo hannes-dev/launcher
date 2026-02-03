@@ -5,6 +5,8 @@ const TERMS: [&'static str; 11] = [
     "zeus",
 ];
 
+mod queriable;
+
 pub fn main() -> iced::Result {
     iced::run(Counter::update, Counter::view)
 }
