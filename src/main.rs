@@ -1,12 +1,18 @@
-use iced::widget::{Column, column, text, text_input};
+use iced::{
+    application::IntoBoot,
+    widget::{Column, column, text, text_input},
+};
 
-use crate::{plugins::text_search::TextSearch, queriable::QueryPlugin};
+use crate::{
+    plugins::text_search::TextSearch,
+    queriable::{QueryPlugin, QueryResult},
+};
 
 mod plugins;
 mod queriable;
 
 pub fn main() -> iced::Result {
-    iced::run(State::update, State::view)
+    iced::application(|| State::new(), State::update, State::view).run()
 }
 
 struct State {
@@ -14,16 +20,14 @@ struct State {
     query: String,
 }
 
-impl Default for State {
-    fn default() -> Self {
+impl State {
+    fn new() -> Self {
         Self {
             plugins: vec![Box::new(TextSearch)],
             query: String::new(),
         }
     }
-}
 
-impl State {
     fn update(&mut self, message: Message) {
         match message {
             Message::ContendChanged(content) => self.query = content,
