@@ -1,11 +1,11 @@
 pub trait QueryPlugin {
-    fn query(&self, query: String) -> Vec<Match>;
+    fn search(&self, query: &str) -> Vec<QueryResult>;
     fn activate(&self, id: &str);
 }
 
-pub struct Match {
+pub struct QueryResult {
     // icon
-    text: String,
-    id: String,
-    score: f32,
+    pub text: String,
+    pub id: String,
+    pub score: f32,
 }
