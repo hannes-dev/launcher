@@ -32,9 +32,9 @@ pub fn main() {
     .subscription(State::subscription)
     .settings(Settings {
         layer_settings: LayerShellSettings {
-            size: Some((0, 400)),
+            size: Some((600, 400)),
             exclusive_zone: -1,
-            anchor: Anchor::Top | Anchor::Left | Anchor::Right,
+            anchor: Anchor::empty(),
             start_mode: StartMode::Active,
             layer: Layer::Overlay,
             ..Default::default()
