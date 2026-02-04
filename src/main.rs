@@ -15,7 +15,7 @@ use iced_layershell::{
 };
 
 use crate::{
-    plugins::text_search::TextSearch,
+    plugins::{calculator::Calculator, text_search::TextSearch},
     queriable::{QueryPlugin, QueryResult},
 };
 
@@ -56,7 +56,7 @@ struct State {
 impl State {
     fn new() -> Self {
         let mut state = Self {
-            plugins: vec![Box::new(TextSearch)],
+            plugins: vec![Box::new(TextSearch), Box::new(Calculator)],
             ..Default::default()
         };
         state.update_results();
@@ -73,17 +73,18 @@ impl State {
 
     fn update(&mut self, message: Message) -> Task<Message> {
         match message {
-            Message::ContendChanged(content) => {
-                dbg!(&content);
-                self.query = content;
-                self.update_results();
+            Message::SearchChanged(content) => {
+                if self.query != content {
+                    self.query = content;
+                    self.update_results();
+                }
             }
             Message::SelectUp => self.selected = self.selected.saturating_sub(1),
             Message::SelectDown => {
                 self.selected = self
                     .selected
                     .saturating_add(1)
-                    .clamp(0, self.results.len() - 1)
+                    .clamp(0, self.results.len().saturating_sub(1))
             }
             _ => {}
         }
@@ -93,7 +94,7 @@ impl State {
 
     fn view<'a>(&'a self) -> Column<'a, Message> {
         let mut column =
-            column![text_input("search...", &self.query).on_input(Message::ContendChanged)];
+            column![text_input("search...", &self.query).on_input(Message::SearchChanged)];
 
         for (i, result) in self.results.iter().enumerate() {
             let mut text = text(&result.text);
@@ -124,5 +125,5 @@ impl State {
 enum Message {
     SelectUp,
     SelectDown,
-    ContendChanged(String),
+    SearchChanged(String),
 }
