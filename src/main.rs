@@ -1,5 +1,8 @@
+use std::process;
+
 use iced::{
     Color, Task,
+    futures::task,
     keyboard::{self, key::Named},
     widget::{Column, column, text, text_input},
 };
@@ -82,7 +85,6 @@ impl State {
                     .saturating_add(1)
                     .clamp(0, self.results.len() - 1)
             }
-            Message::Quit => return iced::exit(),
             _ => {}
         }
 
@@ -109,7 +111,7 @@ impl State {
             keyboard::Event::KeyPressed { key, .. } => match key.as_ref() {
                 keyboard::Key::Named(Named::ArrowUp) => Some(Message::SelectUp),
                 keyboard::Key::Named(Named::ArrowDown) => Some(Message::SelectDown),
-                keyboard::Key::Named(Named::Escape) => Some(Message::Quit),
+                keyboard::Key::Named(Named::Escape) => process::exit(0),
                 _ => None,
             },
             _ => None,
@@ -120,7 +122,6 @@ impl State {
 #[to_layer_message]
 #[derive(Debug, Clone)]
 enum Message {
-    Quit,
     SelectUp,
     SelectDown,
     ContendChanged(String),
