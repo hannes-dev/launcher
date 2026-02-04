@@ -2,6 +2,14 @@ use iced::{
     Color,
     keyboard::{self, key::Named},
     widget::{Column, column, text, text_input},
+    window::close,
+};
+
+use iced_layershell::{
+    Settings, application,
+    reexport::{Anchor, Layer},
+    settings::{LayerShellSettings, StartMode},
+    to_layer_message,
 };
 
 use crate::{
@@ -12,10 +20,27 @@ use crate::{
 mod plugins;
 mod queriable;
 
-pub fn main() -> iced::Result {
-    iced::application(|| State::new(), State::update, State::view)
-        .subscription(State::subscription)
-        .run()
+pub fn main() {
+    application(
+        || State::new(),
+        || String::from("cheese"),
+        State::update,
+        State::view,
+    )
+    .subscription(State::subscription)
+    .settings(Settings {
+        layer_settings: LayerShellSettings {
+            size: Some((0, 400)),
+            exclusive_zone: -1,
+            anchor: Anchor::Top | Anchor::Left | Anchor::Right,
+            start_mode: StartMode::Active,
+            layer: Layer::Overlay,
+            ..Default::default()
+        },
+        ..Default::default()
+    })
+    .run()
+    .unwrap();
 }
 
 #[derive(Default)]
@@ -58,6 +83,7 @@ impl State {
                     .saturating_add(1)
                     .clamp(0, self.results.len() - 1)
             }
+            _ => {}
         }
     }
 
@@ -96,6 +122,7 @@ impl State {
     }
 }
 
+#[to_layer_message]
 #[derive(Debug, Clone)]
 enum Message {
     SelectUp,
