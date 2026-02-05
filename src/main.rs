@@ -2,7 +2,6 @@ use std::process;
 
 use iced::{
     Color, Task,
-    futures::task,
     keyboard::{self, key::Named},
     widget::{Column, column, text, text_input},
 };
@@ -69,6 +68,12 @@ impl State {
             .iter()
             .flat_map(|p| p.search(&self.query))
             .collect();
+        self.results.sort_by(|f, s| {
+            s.score
+                .partial_cmp(&f.score)
+                .unwrap_or(std::cmp::Ordering::Less)
+        });
+        dbg!(&self.results);
     }
 
     fn update(&mut self, message: Message) -> Task<Message> {

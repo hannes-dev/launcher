@@ -9,11 +9,22 @@ pub struct TextSearch;
 
 impl TextSearch {
     fn make_match(text: &str, query: &str) -> Option<QueryResult> {
-        if text.starts_with(&query) {
+        let mut text_chars = text.chars();
+        let mut query_chars = query.chars();
+        let mut count = 0;
+        while let (Some(tc), Some(qc)) = (text_chars.next(), query_chars.next()) {
+            if tc == qc {
+                count += 1;
+            } else {
+                count -= 1;
+            }
+        }
+
+        if count > 0 {
             Some(QueryResult {
-                text: text.to_string(),
-                id: text.to_string(),
-                score: 1.,
+                text: text.into(),
+                id: text.into(),
+                score: count as f32 / query.len() as f32,
             })
         } else {
             None

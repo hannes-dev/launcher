@@ -3,6 +3,7 @@ pub trait QueryPlugin {
     fn activate(&self, id: &str);
 }
 
+#[derive(Debug)]
 pub struct QueryResult {
     // icon
     pub text: String,
