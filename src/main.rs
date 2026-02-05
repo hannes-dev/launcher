@@ -14,7 +14,7 @@ use iced_layershell::{
 };
 
 use crate::{
-    plugins::{calculator::Calculator, text_search::TextSearch},
+    plugins::{calculator::Calculator, desktop::Desktop, text_search::TextSearch},
     queriable::{QueryPlugin, QueryResult},
 };
 
@@ -55,7 +55,11 @@ struct State {
 impl State {
     fn new() -> Self {
         let mut state = Self {
-            plugins: vec![Box::new(TextSearch), Box::new(Calculator)],
+            plugins: vec![
+                Box::new(TextSearch),
+                Box::new(Calculator),
+                Box::new(Desktop::new()),
+            ],
             ..Default::default()
         };
         state.update_results();
